@@ -1,17 +1,17 @@
 # site settings
-title: Forty
-subtitle: by HTML5 UP
-email: youremailaddress@gmail.com
-description: A responsive site template designed by HTML5 Up<br /> and released under the Creative Commons.
-baseurl: "/forty-jekyll-theme" # the subpath of your site, e.g. /blog
-url: # the base hostname & protocol for your site
-author:
-street_address: 1234 Somewhere Road
-city: Nashville
-state: TN
-zip_code: 55555
+title: Davis Pies 
+subtitle: 
+email: Davis.Pies1@gmail.com
+description: Hi, my name is Davis. Welcome to my site. 
+baseurl: "/home" # the subpath of your site, e.g. /blog
+url: localhost:4000 # the base hostname & protocol for your site
+author: Davis Pies
+street_address: 15721 SE Arista Dr
+city: Portland
+state: OR
+zip_code: 97267
 country: United States of America
-phone: (716) 555-5555
+phone: (971) 901-7083 
 
 # homepage tiles
 tiles-source: pages # accepts "posts" or "pages"
@@ -22,12 +22,12 @@ tiles-count: 6
 # Icons are not shown if value is empty
 # You need to restart jekyll for changes to have an effect
 socials:
-  GitHub: https://github.com/andrewbanchich
-  GitLab:
-  Google-Plus: https://plus.google.com/u/0/+AndrewBanchich
-  Instagram:
-  LinkedIn: https://www.linkedin.com/in/andrew-banchich-a4ba1195
-  Twitter: https://twitter.com/andrewbanchich
+  GitHub: https://github.com/Davis-Pies
+  GitLab: https://gitlab.com/davis.pies1
+  Google-Plus: 
+  Instagram: https://www.Instagram.com/Pies.pots
+  LinkedIn: https://www.linkedin.com/in/davis-pies-75224a249
+  Twitter: 
   Facebook:
   Slack:
 
