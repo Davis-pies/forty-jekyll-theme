@@ -1,10 +1,11 @@
 ---
 layout: post
-title: Pottery
-description: Some pots I've made that I am somewhat proud of.
+title: Pottery Gallery
+description: Some pots I've made that I am proud of.
 image: assets/images/pic11.jpg
-nav-menu: true
+thumbnails: assets/images/thumbnails/
+nav-menu: false
 published: true
+tilesize: 300px
 ---
-Look wow! It's some pottery!
-Imaginary Pottery all over!
+{% include my-gallery.html folder="/assets/images/pies.pots"%}

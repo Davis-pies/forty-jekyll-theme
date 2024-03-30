@@ -1,10 +1,10 @@
 # site settings
 title: Davis Pies 
-subtitle: 
+subtitle: BS Mathematics
 email: Davis.Pies1@gmail.com
 description: Hi, my name is Davis. Welcome to my site. 
 baseurl: "/home" # the subpath of your site, e.g. /blog
-url: localhost:4000 # the base hostname & protocol for your site
+url: 127.0.0.1:4000 # the base hostname & protocol for your site
 author: Davis Pies
 street_address: 15721 SE Arista Dr
 city: Portland
@@ -12,6 +12,9 @@ state: OR
 zip_code: 97267
 country: United States of America
 phone: (971) 901-7083 
+pottery_images: "$HOME/forty-jekyll-theme/assets/images/pies.pots"
+pottery_thumbails: "$HOME/forty-jekyll-theme/assets/images/thumbnails/"
+
 
 # homepage tiles
 tiles-source: pages # accepts "posts" or "pages"
@@ -36,6 +39,7 @@ markdown: kramdown
 
 sass:
   style: compressed
+
 
 exclude:
 - "*.gemspec"
