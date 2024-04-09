@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Resume
-image: assets/images/pic01.jpg
+title: Resumé
+image: assets/images/ResumeBanner.png
 nav-menu: true
 published: true
 ---

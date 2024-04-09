@@ -1,8 +1,8 @@
 ---
 layout: post
 title: Pottery Gallery
-description: Some pots I've made that I am proud of.
-image: assets/images/pic11.jpg
+description: My pottery timeline
+image: assets/images/DarkPotteryBanner.png
 thumbnails: assets/images/thumbnails/
 nav-menu: false
 published: true

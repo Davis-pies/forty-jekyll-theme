@@ -3,8 +3,7 @@
 
 
 ####Write in simply awesome `markdown`
-
-```markdown
+published: false
 layout: post
 title: Markdown Style Guide
 ---
