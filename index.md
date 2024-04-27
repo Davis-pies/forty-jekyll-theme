@@ -3,7 +3,7 @@ layout: home
 title: Home
 landing-title: 'Math. Science. Programming. Art.'
 description: null
-image: null
+image: assets/images/ComfyUI_04380_.png 
 author: null
 show_tile: false
 ---

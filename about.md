@@ -2,7 +2,7 @@
 title: About
 layout: landing
 description: 'Who I am and What I do. (Start here)'
-image: assets/images/pic07.jpg
+image: assets/images/ComfyUI_04381_.png
 nav-menu: true
 ---
 

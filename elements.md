@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Elements
-image: assets/images/pic01.jpg
+image: assets/images/ComfyUI_04380_.png
 nav-menu: true
 published: true
 ---
