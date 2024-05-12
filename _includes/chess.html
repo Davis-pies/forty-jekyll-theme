@@ -1,29 +1,56 @@
 <html lang="en-US">
 
 <body>
-	<canvas id="canvas" width="512" height="512"></canvas>
+	<canvas id="canvas" width="1024" height="1024"></canvas>
 </body>
 
 <head>
 	<meta charset="utf-8">
 	<script>
-		const canvas = document.getElementById("canvas");
-
-		alert("chess pieces:" + array.from(pieces).join(", "));
-		let Board() {
-			let numRows = 8
-			let numCols = 8
-			for (let r = 0; r<numRows-1; r++){
-				
-			if (canvas.getContext) {
-				const ctx = canvas.getContext("2d");
-
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
+		const piecePrototype = {
+			move(x,y){
+				this.X += x;
+				this.Y += y;
 			}
-			let pieces = new set(["queen", "king", "knight", "bishop", "rook", "pawn"])
 		}
+		const cellPrototype = {
+			addPiece(piece){
+				this.Piece = piece;
+			}
+			removePiece(){
+				this.Piece = "none";
+			}
+		}
+		function Cell(color,x,y){
+			this.X = x;
+			this.Y = y;
+			this.Color = color;
+		
+		}
+		function Piece(type, color, x, y){
+			this.Type = type;
+			this.X = x;
+			this.Y = y;
+			this.Color = color;
+		}
+
+		Object.assign(Cell.prototype, cellPrototype);
+		Object.assign(Piece.prototype, piecePrototype);
+
+		function Board(numRows, numCols){
+			let Cells[][];
+			for (let y = 0; y<numCols; y++){
+				for (let x = 0; x<numRows; x++){
+					let color = "white";
+					if (isOdd(x+y)){
+						color= "black";
+					}
+					Cells[x][y] = Cell(color,x,y);
+				}
+			}
+		}
+		const newBoard = Board(8,8);
+
 	</script>
 </head>
 
-
-</html>

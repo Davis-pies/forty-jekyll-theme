@@ -1,66 +1,42 @@
-# Forty - Jekyll Theme
+# 🚀 Yai 💬 - AI powered terminal assistant
 
-A Jekyll version of the "Forty" theme by [HTML5 UP](https://html5up.net/).  
+[![build](https://github.com/ekkinox/yai/actions/workflows/build.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/build.yml)
+[![release](https://github.com/ekkinox/yai/actions/workflows/release.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/release.yml)
+[![doc](https://github.com/ekkinox/yai/actions/workflows/doc.yml/badge.svg)](https://github.com/ekkinox/yai/actions/workflows/doc.yml)
 
-![Forty Theme](assets/images/forty.jpg "Forty Theme")
+> Unleash the power of artificial intelligence to streamline your command line experience.
 
-# How to Use
+![Intro](docs/_assets/intro.gif)
 
-For those unfamiliar with how Jekyll works, check out [jekyllrb.com](https://jekyllrb.com/) for all the details, 
-or read up on just the basics of [front matter](https://jekyllrb.com/docs/frontmatter/), [writing posts](https://jekyllrb.com/docs/posts/), 
-and [creating pages](https://jekyllrb.com/docs/pages/).
+## What is Yai ?
 
-Simply fork this repository and start editing the `_config.yml` file!
+`Yai` (your AI) is an assistant for your terminal, using [OpenAI ChatGPT](https://chat.openai.com/) to build and run commands for you. You just need to describe them in your everyday language, it will take care or the rest. 
 
-> NOTE: GitHub Actions is required to deploy to GitHub Pages because GitHub [refuses to update their version of Jekyll](https://github.com/github/pages-gem/issues/651).
+You have any questions on random topics in mind? You can also ask `Yai`, and get the power of AI without leaving `/home`.
 
-# Added Features
+It is already aware of your:
+- operating system & distribution
+- username, shell & home directory
+- preferred editor
 
-* **[Formspree.io](https://formspree.io/) contact form integration** - just add your email to the `_config.yml` and it works!
-* Use `_config.yml` to **set whether the homepage tiles should pull pages or posts**, as well as how many to display.
-* Add your **social profiles** easily in `_config.yml`. Only social profiles buttons you enter in `config.yml` show up on the site footer!
-* Set **featured images** in front matter.
+And you can also give any supplementary preferences to fine tune your experience.
 
-# Credits
+## Documentation
 
-Original README from HTML5 UP:
+A complete documentation is available at [https://ekkinox.github.io/yai/](https://ekkinox.github.io/yai/).
 
-```
-Forty by HTML5 UP
-html5up.net | @ajlkn
-Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+## Quick start
 
+To install `Yai`, simply run:
 
-This is Forty, my latest and greatest addition to HTML5 UP and, per its incredibly
-creative name, my 40th (woohoo)! It's built around a grid of "image tiles" that are
-set up to smoothly transition to secondary landing pages (for which a separate page
-template is provided), and includes a number of neat effects (check out the menu!),
-extra features, and all the usual stuff you'd expect. Hope you dig it!
-
-Demo images* courtesy of Unsplash, a radtastic collection of CC0 (public domain) images
-you can use for pretty much whatever.
-
-(* = not included)
-
-AJ
-aj@lkn.io | @ajlkn
-
-
-Credits:
-
-	Demo Images:
-		Unsplash (unsplash.com)
-
-	Icons:
-		Font Awesome (fortawesome.github.com/Font-Awesome)
-
-	Other:
-		jQuery (jquery.com)
-		html5shiv.js (@afarkas @jdalton @jon_neal @rem)
-		background-size polyfill (github.com/louisremi)
-		Misc. Sass functions (@HugoGiraudel)
-		Respond.js (j.mp/respondjs)
-		Skel (skel.io)
+```shell
+curl -sS https://raw.githubusercontent.com/ekkinox/yai/main/install.sh | bash
 ```
 
-Repository [Jekyll logo](https://github.com/jekyll/brand) icon licensed under a [Creative Commons Attribution 4.0 International License](http://choosealicense.com/licenses/cc-by-4.0/).
+At first run, it will ask you for an [OpenAI API key](https://platform.openai.com/account/api-keys), and use it to create the configuration file in `~/.config/yai.json`.
+
+See [documentation](https://ekkinox.github.io/yai/getting-started/#configuration) for more information.
+
+## Thanks
+
+Thanks to [@K-arch27](https://github.com/K-arch27) for the `yai` name idea!
