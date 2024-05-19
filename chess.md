@@ -7,4 +7,4 @@ nav-menu: false
 published: true
 tilesize: 300px
 ---
-{% include chess.html %}
+{% include chess.js %}
