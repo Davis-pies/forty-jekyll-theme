@@ -47,6 +47,7 @@ const piecePrototype = {
 	deselect() {
 		this.Selected ? this.Selected = false : console.log("Piece not selected");
 	},
+
 	setMovement() {
 		this.Movement = [];
 		switch (this.Name) {
@@ -177,6 +178,7 @@ const boardPrototype = {
 	Check: "none",
 	Kings: [],
 	SelectedPieceMovement: [],
+
 	logColors() {
 		console.log(this.Cells.map(row => row.map(cell => cell.Color[0]).join("")).join("\n"));
 	},
@@ -212,14 +214,6 @@ const boardPrototype = {
 		if (Cell.Piece !== "none") {
 			this.SelectedPiece = Cell.Piece;
 			this.calcMovement();
-		}
-	},
-	captureSelectedPiece(){
-		if (this.SelectedPiece !=="none"){
-			let x = this.SelectedPiece.X;
-			let y = this.SelectedPiece.Y;
-			let cell = this.cellFromXY(x,y);
-			cell.Piece = "none";
 		}
 	},
 
@@ -279,6 +273,7 @@ const boardPrototype = {
 		}
 		console.log("Invalid move");
 	},
+
 	movePieceAt(sourceCoords, destCoords, freeMove) {
 		let sourceCell = this.Cells[sourceCoords[1]][sourceCoords[0]];
 		let destCell = this.Cells[destCoords[1]][destCoords[0]];
@@ -406,7 +401,7 @@ const gameControllerPrototype = {
 	TurnComplete: false,
 	whiteTimer: Timer(),
 	blackTimer: Timer("black"),
-	pieceSelected: false,
+
 	selectPiece(cell) {
 		if (cell.Piece.Color === this.Turn) {
 			this.Board.selectPiece(cell);
@@ -433,9 +428,7 @@ const gameControllerPrototype = {
 	},
 
 	endTurn() {
-		console.log(`end turn called`);
 		if (this.Turn === "white") {
-			console.log(`Ending white turn`);
 			this.whiteTimer.pause();
 			this.Turn = "black";
 			this.blackTimer.unpause();
@@ -457,64 +450,23 @@ const gameControllerPrototype = {
 	},
 
 	CLI() {
+		this.logGame();
+		let pieceSelected = false;
 		this.Board.deselectPiece();
-		this.startGame();
-		while (this.Play) {
-			console.log(`turn: ${this.Turn}`);
-			this.Board.logBoard();
-			this.getPieceSelection();
-			this.getPlacementSelection();
-		}
-		this.Play = false;
-	},
-	getPieceSelection() {
-		this.pieceSelected = false;
-		while (!this.pieceSelected) {
+		while (!pieceSelected) {
 			let userPieceSelection = prompt(`Please select a piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1})`);
-			if (userPieceSelection === "q") {
-				this.pieceSelected = true;
-				return;
-			}
 			try {
 				let [pieceX, pieceY] = userPieceSelection.split(",").map(Number);
 				this.selectPieceXY(pieceX, pieceY);
 				if (this.Board.SelectedPiece !== "none") {
-					this.pieceSelected = true;
+					pieceSelected = true;
 					this.Board.logBoardTargets();
 				}
 			} catch (err) {
 				console.log("Please enter a valid piece");
 			}
 		}
-	},
-	getPlacementSelection() {
-		let piecePlaced = false;
-		while (!piecePlaced) {
-			let userPlacementSelection = prompt(`Please select where to place the piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1}) or type 'q' to cancel:`);
-			if (userPlacementSelection.toLowerCase() === "q") {
-				console.log("Placement canceled.");
-				break;
-			}
-			try {
-				const [placeX, placeY] = userPlacementSelection.split(",").map(Number);
-				let cell = this.Board.cellFromXY(placeX, placeY);
-				if (cell) {
-					piecePlaced = cell.Target; // If the cell is a valid target, the piece is placed.
-					if (piecePlaced) {
-						this.Board.captureSelectedPiece();
-						this.placePiece(cell);
-						this.Board.deselectPiece();
-						console.log("Piece placed.");
-						break;
-					} else {
-						console.log("Cell not a valid target. Try again.");
-					}
-				}
-			} catch (err) {
-				console.log(err);
-				console.log("Please enter a valid placement position or 'q' to quit.");
-			}
-		}
+	
 	}
 }
 
