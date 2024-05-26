@@ -1,56 +1,26 @@
 <html lang="en-US">
 
-<body>
-	<canvas id="canvas" width="1024" height="1024"></canvas>
-</body>
-
 <head>
 	<meta charset="utf-8">
-	<script>
-		const piecePrototype = {
-			move(x,y){
-				this.X += x;
-				this.Y += y;
-			}
-		}
-		const cellPrototype = {
-			addPiece(piece){
-				this.Piece = piece;
-			}
-			removePiece(){
-				this.Piece = "none";
-			}
-		}
-		function Cell(color,x,y){
-			this.X = x;
-			this.Y = y;
-			this.Color = color;
-		
-		}
-		function Piece(type, color, x, y){
-			this.Type = type;
-			this.X = x;
-			this.Y = y;
-			this.Color = color;
-		}
+	<style>
+	.cell{
+		height: 6em;
+		width: 6em;
+		background-color: #555;
+	}
+	.board{
+		height: 500px;
+		width: 500px;
+		background-color: blue;
+	}
 
-		Object.assign(Cell.prototype, cellPrototype);
-		Object.assign(Piece.prototype, piecePrototype);
 
-		function Board(numRows, numCols){
-			let Cells[][];
-			for (let y = 0; y<numCols; y++){
-				for (let x = 0; x<numRows; x++){
-					let color = "white";
-					if (isOdd(x+y)){
-						color= "black";
-					}
-					Cells[x][y] = Cell(color,x,y);
-				}
-			}
-		}
-		const newBoard = Board(8,8);
-
-	</script>
+	</style>
 </head>
 
+<body>
+	<div class="board">
+		<div class="cell"></div>
+	</div>
+
+</body>
