@@ -84,6 +84,10 @@ class Piece {
 			let step2 = new Movement(0, direction * 2, "int", false);
 			this.Movement.push(step2);
 		}
+		for (let x of [-1, 1]) {
+			let cornerAttack = new Movement(x, direction, "int", true, true);
+			this.Movement.push(cornerAttack);
+		}
 	}
 
 	setKnightMovement() {
@@ -187,6 +191,7 @@ class Cell {
 		this.Occupied = false;
 		this.BoardRows = boardRows;
 		this.BoardColumns = boardColumns;
+		this.EnPassant = false;
 	}
 
 	placePiece(piece) {
@@ -314,11 +319,11 @@ class Board {
 	}
 
 	calcMovement() {
-		console.log("calc movement called");
+		//console.log("calc movement called");
 		this.SelectedPieceMovement = [];
-		console.log(`Selected piece (${this.SelectedPiece.Name}) movement(x,y): ($${this.SelectedPiece.Movement.X}, ${this.SelectedPiece.Movement.Y}`);
+		//console.log(`Selected piece (${this.SelectedPiece.Name}) movement(x,y): ($${this.SelectedPiece.Movement.X}, ${this.SelectedPiece.Movement.Y}`);
 		this.SelectedPiece.Movement.forEach((movementObject) => {
-			console.log(`Movement Object x: ${movementObject.X}, Movement Object y: ${movementObject.Y}`);
+			//console.log(`Movement Object x: ${movementObject.X}, Movement Object y: ${movementObject.Y}`);
 			switch (movementObject.Type) {
 				case "int":
 					console.log(`Case: int`);
@@ -347,7 +352,7 @@ class Board {
 		} = movementObject;
 		let xf = xi + dx;
 		let yf = yi + dy;
-		if(this.isInBounds(xf, yf)){
+		if (this.isInBounds(xf, yf)) {
 			console.log(`xf: ${xf}, yf: ${yf}`);
 			console.log(`valid placement? ${this.isValidPlacement(movementObject,xf,yf)}`);
 			console.log(`attack movement? ${movementObject.Attack}`);
@@ -361,6 +366,8 @@ class Board {
 	}
 
 	handleDirMovement(movementObject) {
+		console.log(`Handle dir movement called with x: ${movementObject.X}, y: ${movementObject.Y}`);
+
 		let {
 			X: xi,
 			Y: yi
@@ -371,26 +378,46 @@ class Board {
 		} = movementObject;
 		let xf = xi + dx;
 		let yf = yi + dy;
-		while (this.isInBounds(xf,yf) && this.isValidPlacement(movementObject, xf, yf)) {
+		let unblocked = true;
+
+		while (this.isInBounds(xf, yf) && this.isValidPlacement(movementObject, xf, yf) &&
+			unblocked) {
 			this.SelectedPieceMovement.push([xf, yf]);
 			this.cellFromXY(xf, yf).setTarget();
+			if (this.cellFromXY(xf, yf).Occupied) {
+				console.log(`cell at ${xf}, ${yf} is occupied`);
+				unblocked = false;
+			}
+			xf += dx;
+			yf += dy;
 		}
+
 	}
 	isInBounds(x, y) {
 		return x >= 0 && x < this.columns && y >= 0 && y < this.rows;
 	}
 	isValidPlacement(movementObject, x, y) {
-		console.log(`is valid placement? x: ${x}, y: ${y}?`);
-		let result = true;
-		if (this.cellFromXY(x, y).Occupied && !movementObject.Attack) {
-			console.log("space occupied and not an attacking move");
-			result = false;
+		console.log(`x: ${x}, y: ${y}`);
+		console.log(`is valid placement called`);
+		let targetCell = this.cellFromXY(x, y);
+		let targetPiece = targetCell.Piece;
+		let selectedPieceName = this.SelectedPiece.Name;
+		console.log(`selected piece: ${selectedPieceName}`);
+		let result = false;
+		if (targetCell.Occupied && movementObject.Attack && targetPiece.color != this.SelectedPiece.Color) {
+			console.log("space occupied, different color, and piece attacks");
+			result = true;
 			return result;
-		} else if (this.cellFromXY(x, y).Occupied && this.cellFromXY(x, y).Piece.Color == this.SelectedPiece.Color) {
-			console.log("occupied but same color");
-			result = false;
+		} else if (!targetCell.Occupied && !movementObject.AttackOnly) {
+			console.log("unoccupied and not exclusive attack");
+			result = true;
+			return result;
+		} else if (selectedPieceName == "pawn" && targetCell.EnPassant) {
+			console.log("en passant condition met in 'isValidPlacement'");
+			result = true;
 			return result;
 		}
+		console.log(`is valid placement: ${result}`);
 		return result;
 	}
 	findKings() {
@@ -491,12 +518,31 @@ class GameController {
 
 	placePiece(cell) {
 		if (cell.Target) {
+			this.clearEnPassant();
+			let previousCell = this.Board.cellFromXY(this.Board.SelectedPiece.X, this.Board.SelectedPiece.Y);
+			this.setEnPassantIfNeeded(previousCell, cell);
 			cell.placePiece(this.Board.SelectedPiece);
+			previousCell.removePiece();
 			this.endTurn();
 		} else {
 			console.log("Cell not a target");
 			this.Board.deselectPiece();
 		}
+	}
+	setEnPassantIfNeeded(previousCell, cell) {
+		console.log("setEnPassantIfNeeded called");
+		let selectedPiece = this.Board.SelectedPiece;
+		let cellDiff = cell.Y - previousCell.Y;
+		if (selectedPiece.Name == "pawn" && Math.abs(cellDiff == 2)) {
+			let dir = cellDiff / 2;
+			let midCellY = dir + previousCell.Y;
+			let midCell = this.Board.cellFromXY(cell.X, midCellY);
+			console.log(`en Passant Condition Set for cell at ${midCell.X}, ${midCell.Y}`);
+			midCell.EnPassant = true;
+		}
+	}
+	clearEnPassant() {
+		this.Board.flatCells.forEach((cell) => cell.EnPassant = false);
 	}
 
 	endTurn() {
@@ -532,7 +578,6 @@ class GameController {
 		}
 		this.Play = false;
 	}
-
 	getPieceSelection() {
 		this.pieceSelected = false;
 		while (!this.pieceSelected) {
@@ -555,13 +600,13 @@ class GameController {
 			}
 		}
 	}
-
 	getPlacementSelection() {
 		let piecePlaced = false;
 		while (!piecePlaced) {
 			let userPlacementSelection = prompt(`Please select where to place the piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1}) or type 'q' to cancel:`);
 			if (userPlacementSelection.toLowerCase() === "q") {
 				console.log("Placement canceled.");
+				this.Board.deselectPiece();
 				break;
 			}
 			try {
