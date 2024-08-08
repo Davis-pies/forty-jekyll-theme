@@ -44,31 +44,31 @@ class Piece {
 	}
 
 	setMovement() {
-		console.log("set movement called");
+		//console.log("set movement called");
 		this.Movement = [];
 		switch (this.Name) {
 			case "pawn":
-				console.log("case Pawn");
+				//console.log("case Pawn");
 				this.setPawnMovement();
 				break;
 			case "knight":
-				console.log("case Knight");
+				//console.log("case Knight");
 				this.setKnightMovement();
 				break;
 			case "king":
-				console.log("case King");
+				//console.log("case King");
 				this.setKingMovement();
 				break;
 			case "queen":
-				console.log("case Queen");
+				//console.log("case Queen");
 				this.setQueenMovement();
 				break;
 			case "bishop":
-				console.log("case Bishop");
+				//console.log("case Bishop");
 				this.setBishopMovement();
 				break;
 			case "rook":
-				console.log("case Rook");
+				//console.log("case Rook");
 				this.setRookMovement();
 				break;
 			default:
@@ -119,6 +119,7 @@ class Piece {
 		let movements = Movement.MovementFromArray(kingMoves);
 		this.Movement.push(...movements);
 	}
+
 	setBishopMovement() {
 		const bishopMoves = [
 			[1, 1],
@@ -202,7 +203,7 @@ class Cell {
 		piece.BoardRows = this.BoardRows;
 		piece.BoardColumns = this.BoardColumns;
 		piece.setMovement();
-		console.log(piece);
+		//console.log(piece);
 	}
 
 	removePiece() {
@@ -294,7 +295,7 @@ class Board {
 	}
 
 	selectPiece(Cell) {
-		console.log("select piece called");
+		//console.log("select piece called");
 		if (Cell.Piece !== "none") {
 			this.SelectedPiece = Cell.Piece;
 			this.calcMovement();
@@ -326,21 +327,21 @@ class Board {
 			//console.log(`Movement Object x: ${movementObject.X}, Movement Object y: ${movementObject.Y}`);
 			switch (movementObject.Type) {
 				case "int":
-					console.log(`Case: int`);
+					//console.log(`Case: int`);
 					this.handleIntMovement(movementObject);
 					break;
 				case "dir":
-					console.log(`Case: dir`);
+					//console.log(`Case: dir`);
 					this.handleDirMovement(movementObject);
 					break;
 				default:
 					break;
 			}
 		});
-
 	}
+
 	handleIntMovement(movementObject) {
-		console.log("---handle int movement called---");
+		//console.log("---handle int movement called---");
 		let {
 			X: xi,
 			Y: yi
@@ -353,10 +354,10 @@ class Board {
 		let xf = xi + dx;
 		let yf = yi + dy;
 		if (this.isInBounds(xf, yf)) {
-			console.log(`xf: ${xf}, yf: ${yf}`);
-			console.log(`valid placement? ${this.isValidPlacement(movementObject,xf,yf)}`);
-			console.log(`attack movement? ${movementObject.Attack}`);
-			console.log(`unoccupied? ${!this.cellFromXY(xf, yf).Occupied}`);
+			//console.log(`xf: ${xf}, yf: ${yf}`);
+			//console.log(`valid placement? ${this.isValidPlacement(movementObject,xf,yf)}`);
+			//console.log(`attack movement? ${movementObject.Attack}`);
+			//console.log(`unoccupied? ${!this.cellFromXY(xf, yf).Occupied}`);
 			if (this.isValidPlacement(movementObject, xf, yf) && (movementObject.Attack ||
 					!this.cellFromXY(xf, yf).Occupied)) {
 				this.SelectedPieceMovement.push([xf, yf]);
@@ -366,12 +367,12 @@ class Board {
 	}
 
 	handleDirMovement(movementObject) {
-		console.log(`Handle dir movement called with x: ${movementObject.X}, y: ${movementObject.Y}`);
-
+		//console.log(`Handle dir movement called with x: ${movementObject.X}, y: ${movementObject.Y}`);
 		let {
 			X: xi,
 			Y: yi
 		} = this.SelectedPiece;
+
 		let {
 			X: dx,
 			Y: dy
@@ -393,33 +394,34 @@ class Board {
 		}
 
 	}
+
 	isInBounds(x, y) {
 		return x >= 0 && x < this.columns && y >= 0 && y < this.rows;
 	}
+
 	isValidPlacement(movementObject, x, y) {
-		console.log(`x: ${x}, y: ${y}`);
-		console.log(`is valid placement called`);
+		//console.log(`x: ${x}, y: ${y}`);
+		//console.log(`is valid placement called`);
 		let targetCell = this.cellFromXY(x, y);
 		let targetPiece = targetCell.Piece;
 		let selectedPieceName = this.SelectedPiece.Name;
-		console.log(`selected piece: ${selectedPieceName}`);
+		//console.log(`selected piece: ${selectedPieceName}`);
 		let result = false;
-		if (targetCell.Occupied && movementObject.Attack && targetPiece.color != this.SelectedPiece.Color) {
-			console.log("space occupied, different color, and piece attacks");
+		if (targetCell.Occupied && movementObject.Attack && targetPiece.Color != this.SelectedPiece.Color) {
+			//console.log("space occupied, different color, and piece attacks");
+			//console.log(`Selected Piece Color ${this.SelectedPiece.Color}`);
 			result = true;
-			return result;
 		} else if (!targetCell.Occupied && !movementObject.AttackOnly) {
-			console.log("unoccupied and not exclusive attack");
+			//console.log("unoccupied and not exclusive attack");
 			result = true;
-			return result;
-		} else if (selectedPieceName == "pawn" && targetCell.EnPassant) {
-			console.log("en passant condition met in 'isValidPlacement'");
+		} else if (selectedPieceName === "pawn" && targetCell.EnPassant) {
+			//console.log("en passant condition met in 'isValidPlacement'");
 			result = true;
-			return result;
 		}
-		console.log(`is valid placement: ${result}`);
+		//console.log(`is valid placement: ${result}`);
 		return result;
 	}
+
 	findKings() {
 		this.Kings = this.flatCells.filter(cell => cell.Piece.Name === "king").map(cell => cell.Piece);
 	}
@@ -431,7 +433,9 @@ class Board {
 	dangerCheck() {
 		this.findKings();
 		this.Check = this.Kings.filter(king => this.isPieceTargeted(king)).map(king => `${king.Color} king is under attack!`).join('\n');
+		console.log(this.Check);
 	}
+
 
 	isPieceTargeted(piece) {
 		let cell = this.cellFromXY(piece.X, piece.Y);
@@ -453,24 +457,30 @@ class Timer {
 		this.IncrementQuantity = incrementQuantity;
 		this.UpdateInterval = updateInterval;
 		this.Interval = null;
-		this.Pause = false;
+		this.Pause = true;
 		if (instaStart) {
 			this.startTimer();
 		}
 	}
 
-	decrement(timer) {
+	decrement() {
 		let currentTime = Date.now();
-		if (!timer.Pause) {
-			let elapsedTime = (currentTime - timer.LastTime) / 1000;
-			timer.CurrentQuantity -= elapsedTime;
+		//console.log("decrement called");
+		if (!this.Pause) {
+			let elapsedTime = (currentTime - this.LastTime) / 1000;
+			//console.log(elapsedTime);
+			this.CurrentQuantity -= elapsedTime;
+			//console.log(this.CurrentQuantity);
 		}
-		timer.LastTime = currentTime;
+		this.LastTime = currentTime;
 	}
 
 	startTimer() {
+		console.log("startTimer called");
 		this.LastTime = Date.now();
-		this.Interval = setInterval(this.decrement, this.UpdateInterval, this);
+		this.Interval = setInterval(() => this.decrement(), this.UpdateInterval);
+		console.log(this.Interval);
+		this.Pause = false;
 	}
 
 	increment() {
@@ -478,11 +488,17 @@ class Timer {
 	}
 
 	pause() {
+		console.log(`Pausing ${this.Color} Timer`);
 		this.Pause = true;
 	}
 
 	unpause() {
+		console.log(`Unpausing ${this.Color} Timer`);
 		this.Pause = false;
+	}
+
+	log() {
+		console.log(`Time Remaining: ${this.CurrentQuantity}`);
 	}
 }
 
@@ -510,9 +526,9 @@ class GameController {
 	}
 
 	selectPieceXY(x, y) {
-		console.log(`selectPieceXY called with X: ${x}, Y: ${y}`);
+		//console.log(`selectPieceXY called with X: ${x}, Y: ${y}`);
 		const cell = this.Board.cellFromXY(x, y);
-		console.log(`Cell has piece ${cell.Piece.Name}`);
+		//console.log(`Cell has piece ${cell.Piece.Name}`);
 		if (cell) this.selectPiece(cell);
 	}
 
@@ -523,34 +539,38 @@ class GameController {
 			this.setEnPassantIfNeeded(previousCell, cell);
 			cell.placePiece(this.Board.SelectedPiece);
 			previousCell.removePiece();
-			this.endTurn();
 		} else {
-			console.log("Cell not a target");
+			//console.log("Cell not a target");
 			this.Board.deselectPiece();
 		}
 	}
+
 	setEnPassantIfNeeded(previousCell, cell) {
-		console.log("setEnPassantIfNeeded called");
+		//console.log("setEnPassantIfNeeded called");
 		let selectedPiece = this.Board.SelectedPiece;
 		let cellDiff = cell.Y - previousCell.Y;
 		if (selectedPiece.Name == "pawn" && Math.abs(cellDiff == 2)) {
 			let dir = cellDiff / 2;
 			let midCellY = dir + previousCell.Y;
 			let midCell = this.Board.cellFromXY(cell.X, midCellY);
-			console.log(`en Passant Condition Set for cell at ${midCell.X}, ${midCell.Y}`);
+			//console.log(`en Passant Condition Set for cell at ${midCell.X}, ${midCell.Y}`);
 			midCell.EnPassant = true;
 		}
 	}
+
 	clearEnPassant() {
 		this.Board.flatCells.forEach((cell) => cell.EnPassant = false);
 	}
 
 	endTurn() {
+		console.log("end turn called...");
 		if (this.Turn === "white") {
+			console.log("ending white turn");
 			this.whiteTimer.pause();
 			this.Turn = "black";
 			this.blackTimer.unpause();
 		} else {
+			console.log("ending black turn");
 			this.blackTimer.pause();
 			this.Turn = "white";
 			this.whiteTimer.unpause();
@@ -558,32 +578,47 @@ class GameController {
 	}
 
 	logGame() {
-		console.log(JSON.stringify(this, null, 1));
 		this.Board.logBoard();
 	}
 
 	startGame() {
 		this.Play = true;
 		this.whiteTimer.startTimer();
+		this.blackTimer.startTimer();
+		this.blackTimer.pause();
 	}
 
-	CLI() {
+	async CLI() {
 		this.Board.deselectPiece();
 		this.startGame();
 		while (this.Play) {
-			console.log(`turn: ${this.Turn}`);
-			this.Board.logBoard();
-			this.getPieceSelection();
-			this.getPlacementSelection();
+			await this.playTurn();
+			if (this.Play) {
+				this.endTurn();
+				// Add a small delay to allow for timer updates
+				await new Promise(resolve => setTimeout(resolve, 100));
+			}
 		}
-		this.Play = false;
 	}
-	getPieceSelection() {
+
+	async playTurn() {
+		console.log(`turn: ${this.Turn}`);
+		console.log(`check: ${this.Check}`);
+		console.log(`white timer quantity: ${this.whiteTimer.CurrentQuantity}`);
+		console.log(`black timer quantity: ${this.blackTimer.CurrentQuantity}`);
+		this.Board.logBoard();
+		await this.getPieceSelection();
+		if (this.Play) {
+			await this.getPlacementSelection();
+		}
+	}
+
+	async getPieceSelection() {
 		this.pieceSelected = false;
-		while (!this.pieceSelected) {
-			let userPieceSelection = prompt(`Please select a piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1})`);
+		while (!this.pieceSelected && this.Play) {
+			let userPieceSelection = await this.promptAsync(`Please select a piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1})`);
 			if (userPieceSelection === "q") {
-				this.pieceSelected = true;
+				this.Play = false;
 				return;
 			}
 			try {
@@ -598,12 +633,15 @@ class GameController {
 			} catch (err) {
 				console.log("Please enter a valid piece\n" + err);
 			}
+			// Add a small delay to allow for timer updates
+			await new Promise(resolve => setTimeout(resolve, 100));
 		}
 	}
-	getPlacementSelection() {
+
+	async getPlacementSelection() {
 		let piecePlaced = false;
-		while (!piecePlaced) {
-			let userPlacementSelection = prompt(`Please select where to place the piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1}) or type 'q' to cancel:`);
+		while (!piecePlaced && this.Play) {
+			let userPlacementSelection = await this.promptAsync(`Please select where to place the piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1}) or type 'q' to cancel:`);
 			if (userPlacementSelection.toLowerCase() === "q") {
 				console.log("Placement canceled.");
 				this.Board.deselectPiece();
@@ -615,10 +653,7 @@ class GameController {
 				if (cell) {
 					piecePlaced = cell.Target; // If the cell is a valid target, the piece is placed.
 					if (piecePlaced) {
-						this.Board.captureSelectedPiece();
-						this.placePiece(cell);
-						this.Board.deselectPiece();
-						console.log("Piece placed.");
+						this.handlePlacement(cell)
 					} else {
 						console.log("Cell not a valid target. Try again.");
 					}
@@ -627,9 +662,68 @@ class GameController {
 				console.log(err);
 				console.log("Please enter a valid placement position or 'q' to quit.");
 			}
+			// Add a small delay to allow for timer updates
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
+	}
+	// Helper method to promisify the prompt function
+	promptAsync(message) {
+		return new Promise((resolve) => {
+			resolve(prompt(message));
+		});
+	}
+	
+	async testTimersInGame() {
+		this.startGame();
+		console.log("Game started. White timer running, Black timer paused.");
+
+		// Log initial times
+		console.log("Initial times:");
+		this.logTimers();
+
+		for (let i = 0; i < 6; i++) {
+			// Wait for 2 seconds
+			await new Promise(resolve => setTimeout(resolve, 2000));
+			console.log(`\nAfter ${(i + 1) * 2} seconds:`);
+			this.logTimers();
+
+			// Switch turns
+			this.endTurn();
+			console.log(`Switched to ${this.Turn}'s turn.`);
+		}
+
+		// Stop the game
+		this.Play = false;
+		this.whiteTimer.pause();
+		this.blackTimer.pause();
+		console.log("\nGame stopped. Both timers paused.");
+		this.logTimers();
+	}
+
+	logTimers() {
+		console.log(`White timer: ${this.whiteTimer.CurrentQuantity.toFixed(2)}`);
+		console.log(`Black timer: ${this.blackTimer.CurrentQuantity.toFixed(2)}`);
+	}
+
+	handlePlacement(cell) {
+		if (this.enPassantCapture(cell)) {
+			let capturePawnCell = this.Board.cellFromXY(cell.X, this.Board.SelectedPiece.Y);
+			capturePawnCell.removePiece();
+		}
+		this.Board.captureSelectedPiece();
+		this.placePiece(cell);
+		this.Board.deselectPiece();
+		console.log("Piece placed.");
+	}
+	enPassantCapture(cell) {
+		if (this.Board.SelectedPiece.Name == "pawn" && !cell.Occupied) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
+
 
 function toAlgebraic(x, y) {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -655,12 +749,56 @@ function fromAlgebraic(algebraic) {
 	return [x - 1, y];
 }
 
+
+async function testTimer() {
+	const whiteTimer = new Timer();
+	whiteTimer.startTimer();
+
+	console.log("Initial time:");
+	whiteTimer.log();
+
+	await new Promise(resolve => setTimeout(resolve, 5000));
+	whiteTimer.pause();
+	console.log("After 5 seconds (paused):");
+	whiteTimer.log();
+
+	await new Promise(resolve => setTimeout(resolve, 2000));
+	whiteTimer.unpause();
+	console.log("After 7 seconds (unpaused):");
+	whiteTimer.log();
+
+	await new Promise(resolve => setTimeout(resolve, 3000));
+	whiteTimer.increment();
+	console.log("After 10 seconds (incremented):");
+	whiteTimer.log();
+}
+async function runTimerTest() {
+    const game = new GameController();
+    await game.testTimersInGame();
+}
+
+runTimerTest();
+
+
+
+//testTimer();
+//let whiteTimer = new Timer("white", 600, 0, 100, true);
+//whiteTimer.log();
+//setTimeout(() => whiteTimer.pause(), 5000); // Pauses the timer after 5 seconds
+//whiteTimer.log();
+//setTimeout(() => whiteTimer.unpause(), 7000); // Unpauses the timer after 7 seconds
+//whiteTimer.log();
+//setTimeout(() => whiteTimer.increment(), 10000); // Increments the timer after 10 seconds
+//whiteTimer.log();
+
+
+
 let game = new GameController();
 game.CLI();
-console.log(toAlgebraic(0, 0)); // should print "a1"
-console.log(toAlgebraic(3, 7)); // should print "d8"
-console.log(toAlgebraic(25, 0)); // should print "z1"
-console.log(toAlgebraic(26, 0)); // should print "aa1"
-console.log(fromAlgebraic("a1")); // should print [0, 0]
-console.log(fromAlgebraic("d8")); // should print [3, 7]
-console.log(fromAlgebraic("z1")); // should print [25, 0]
+//console.log(toAlgebraic(0, 0)); // should print "a1"
+//console.log(toAlgebraic(3, 7)); // should print "d8"
+//console.log(toAlgebraic(25, 0)); // should print "z1"
+//console.log(toAlgebraic(26, 0)); // should print "aa1"
+//console.log(fromAlgebraic("a1")); // should print [0, 0]
+//console.log(fromAlgebraic("d8")); // should print [3, 7]
+//console.log(fromAlgebraic("z1")); // should print [25, 0]
