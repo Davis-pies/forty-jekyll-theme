@@ -44,31 +44,31 @@ class Piece {
 	}
 
 	setMovement() {
-		console.log("set movement called");
+		//console.log("set movement called");
 		this.Movement = [];
 		switch (this.Name) {
 			case "pawn":
-				console.log("case Pawn");
+				//console.log("case Pawn");
 				this.setPawnMovement();
 				break;
 			case "knight":
-				console.log("case Knight");
+				//console.log("case Knight");
 				this.setKnightMovement();
 				break;
 			case "king":
-				console.log("case King");
+				//console.log("case King");
 				this.setKingMovement();
 				break;
 			case "queen":
-				console.log("case Queen");
+				//console.log("case Queen");
 				this.setQueenMovement();
 				break;
 			case "bishop":
-				console.log("case Bishop");
+				//console.log("case Bishop");
 				this.setBishopMovement();
 				break;
 			case "rook":
-				console.log("case Rook");
+				//console.log("case Rook");
 				this.setRookMovement();
 				break;
 			default:
@@ -202,7 +202,7 @@ class Cell {
 		piece.BoardRows = this.BoardRows;
 		piece.BoardColumns = this.BoardColumns;
 		piece.setMovement();
-		console.log(piece);
+		//console.log(piece);
 	}
 
 	removePiece() {
@@ -404,7 +404,7 @@ class Board {
 		let selectedPieceName = this.SelectedPiece.Name;
 		console.log(`selected piece: ${selectedPieceName}`);
 		let result = false;
-		if (targetCell.Occupied && movementObject.Attack && targetPiece.color != this.SelectedPiece.Color) {
+		if (targetCell.Occupied && movementObject.Attack && targetPiece.Color != this.SelectedPiece.Color) {
 			console.log("space occupied, different color, and piece attacks");
 			result = true;
 			return result;
@@ -435,9 +435,26 @@ class Board {
 
 	isPieceTargeted(piece) {
 		let cell = this.cellFromXY(piece.X, piece.Y);
-		cell.resetTarget();
-		return this.flatCells.some(otherCell => otherCell.Piece.Color !== piece.Color && this.cellFromXY(otherCell.Piece.X, otherCell.Piece.Y).Target);
+		let isTargeted = this.flatCells.some(otherCell => {
+			if (otherCell.Occupied && otherCell.Piece.Color !== piece.Color) {
+				let otherPiece = otherCell.Piece;
+				let originalX = otherPiece.X;
+				let originalY = otherPiece.Y;
+				otherPiece.X = otherCell.X;
+				otherPiece.Y = otherCell.Y;
+				otherPiece.setMovement();
+				let result = this.cellFromXY(cell.X, cell.Y).Target;
+				otherPiece.X = originalX;
+				otherPiece.Y = originalY;
+				return result;
+			}
+			return false;
+		});
+
+		this.resetTargets();
+		return isTargeted;
 	}
+
 
 	deselectPiece() {
 		this.SelectedPiece = "none";
@@ -521,6 +538,13 @@ class GameController {
 			this.clearEnPassant();
 			let previousCell = this.Board.cellFromXY(this.Board.SelectedPiece.X, this.Board.SelectedPiece.Y);
 			this.setEnPassantIfNeeded(previousCell, cell);
+			// Check if the move is an en passant capture
+			if (this.Board.SelectedPiece.Name === "pawn" && cell.X !== previousCell.X && !cell.Occupied) {
+				// Capture the pawn
+				let capturedPawnCell = this.Board.cellFromXY(cell.X, previousCell.Y);
+				capturedPawnCell.removePiece();
+			}
+
 			cell.placePiece(this.Board.SelectedPiece);
 			previousCell.removePiece();
 			this.endTurn();
@@ -654,13 +678,43 @@ function fromAlgebraic(algebraic) {
 	}
 	return [x - 1, y];
 }
+function assertEqual(actual, expected, message) {
+    if (actual === expected) {
+        console.log(`✓ ${message}`);
+    } else {
+        console.error(`✕ ${message}`);
+        console.error(`   Expected: ${expected}`);
+        console.error(`   Actual: ${actual}`);
+    }
+}
+
+function testIsPieceTargeted() {
+    const board = new Board(8, 8);
+    const piece = new Piece('rook', 'white');
+    board.placePiece(piece, 0, 0);
+    assertEqual(board.isPieceTargeted(piece), false, 'isPieceTargeted returns false when piece is not targeted');
+}
+
+function testIsPieceTargetedByOpponent() {
+    const board = new Board(8, 8);
+    const piece = new Piece('rook', 'white');
+    const opponentPiece = new Piece('bishop', 'black');
+    board.placePiece(piece, 0, 0);
+    board.placePiece(opponentPiece, 3, 3);
+    assertEqual(board.isPieceTargeted(piece), true, 'isPieceTargeted returns true when piece is targeted by an opponent\'s piece');
+}
+
+// Run the tests
+testIsPieceTargeted();
+testIsPieceTargetedByOpponent();
+
 
 let game = new GameController();
-game.CLI();
-console.log(toAlgebraic(0, 0)); // should print "a1"
-console.log(toAlgebraic(3, 7)); // should print "d8"
-console.log(toAlgebraic(25, 0)); // should print "z1"
-console.log(toAlgebraic(26, 0)); // should print "aa1"
-console.log(fromAlgebraic("a1")); // should print [0, 0]
-console.log(fromAlgebraic("d8")); // should print [3, 7]
-console.log(fromAlgebraic("z1")); // should print [25, 0]
+//game.CLI();
+//console.log(toAlgebraic(0, 0)); // should print "a1"
+//console.log(toAlgebraic(3, 7)); // should print "d8"
+//console.log(toAlgebraic(25, 0)); // should print "z1"
+//console.log(toAlgebraic(26, 0)); // should print "aa1"
+//console.log(fromAlgebraic("a1")); // should print [0, 0]
+//console.log(fromAlgebraic("d8")); // should print [3, 7]
+//console.log(fromAlgebraic("z1")); // should print [25, 0]
