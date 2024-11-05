@@ -1,5 +1,6 @@
 const prompt = require("prompt-sync")();
 
+//PIECE
 class Piece {
 	constructor(type, color) {
 		this.X = -1;
@@ -181,6 +182,7 @@ class Movement {
 }
 
 
+//CELL
 class Cell {
 	constructor(color, x, y, boardRows, boardColumns) {
 		this.X = x;
@@ -219,6 +221,8 @@ class Cell {
 	}
 }
 
+
+//BOARD
 class Board {
 	constructor(numRows, numCols) {
 		this.rows = numRows;
@@ -243,6 +247,10 @@ class Board {
 			length
 		}, () => args.length ? this.createArray(...args) : undefined);
 	}
+	clearBoard() {
+		this.flatCells.forEach(cell => cell.removePiece());
+	}
+
 
 	logColors() {
 		console.log(this.Cells.map(row => row.map(cell => cell.Color[0]).join("")).join("\n"));
@@ -428,32 +436,6 @@ class Board {
 		return this.isInBounds(x, y) ? this.Cells[y][x] : null;
 	}
 
-	dangerCheck() {
-		this.findKings();
-		this.Check = this.Kings.filter(king => this.isPieceTargeted(king)).map(king => `${king.Color} king is under attack!`).join('\n');
-	}
-
-	isPieceTargeted(piece) {
-		let cell = this.cellFromXY(piece.X, piece.Y);
-		let isTargeted = this.flatCells.some(otherCell => {
-			if (otherCell.Occupied && otherCell.Piece.Color !== piece.Color) {
-				let otherPiece = otherCell.Piece;
-				let originalX = otherPiece.X;
-				let originalY = otherPiece.Y;
-				otherPiece.X = otherCell.X;
-				otherPiece.Y = otherCell.Y;
-				otherPiece.setMovement();
-				let result = this.cellFromXY(cell.X, cell.Y).Target;
-				otherPiece.X = originalX;
-				otherPiece.Y = originalY;
-				return result;
-			}
-			return false;
-		});
-
-		this.resetTargets();
-		return isTargeted;
-	}
 
 
 	deselectPiece() {
@@ -462,6 +444,7 @@ class Board {
 	}
 }
 
+//TIMER
 class Timer {
 	constructor(color = "white", startQuantity = 600, incrementQuantity = 0, updateInterval = 100, instaStart = false) {
 		this.Color = color;
@@ -503,6 +486,7 @@ class Timer {
 	}
 }
 
+//GAME CONTROLLER
 class GameController {
 	constructor() {
 		this.Mode = "normal";
@@ -557,7 +541,7 @@ class GameController {
 		console.log("setEnPassantIfNeeded called");
 		let selectedPiece = this.Board.SelectedPiece;
 		let cellDiff = cell.Y - previousCell.Y;
-		if (selectedPiece.Name == "pawn" && Math.abs(cellDiff == 2)) {
+		if (selectedPiece.Name == "pawn" && Math.abs(cellDiff) == 2) {
 			let dir = cellDiff / 2;
 			let midCellY = dir + previousCell.Y;
 			let midCell = this.Board.cellFromXY(cell.X, midCellY);
@@ -654,7 +638,7 @@ class GameController {
 		}
 	}
 }
-
+//CONVERSIONS
 function toAlgebraic(x, y) {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz";
 	let col = '';
@@ -678,39 +662,24 @@ function fromAlgebraic(algebraic) {
 	}
 	return [x - 1, y];
 }
+
+//TEST FUNCTIONS
 function assertEqual(actual, expected, message) {
-    if (actual === expected) {
-        console.log(`✓ ${message}`);
-    } else {
-        console.error(`✕ ${message}`);
-        console.error(`   Expected: ${expected}`);
-        console.error(`   Actual: ${actual}`);
-    }
+	if (actual === expected) {
+		console.log(`✓ ${message}`);
+	} else {
+		console.error(`✕ ${message}`);
+		console.error(`   Expected: ${expected}`);
+		console.error(`   Actual: ${actual}`);
+	}
 }
 
-function testIsPieceTargeted() {
-    const board = new Board(8, 8);
-    const piece = new Piece('rook', 'white');
-    board.placePiece(piece, 0, 0);
-    assertEqual(board.isPieceTargeted(piece), false, 'isPieceTargeted returns false when piece is not targeted');
-}
-
-function testIsPieceTargetedByOpponent() {
-    const board = new Board(8, 8);
-    const piece = new Piece('rook', 'white');
-    const opponentPiece = new Piece('bishop', 'black');
-    board.placePiece(piece, 0, 0);
-    board.placePiece(opponentPiece, 3, 3);
-    assertEqual(board.isPieceTargeted(piece), true, 'isPieceTargeted returns true when piece is targeted by an opponent\'s piece');
-}
-
-// Run the tests
-testIsPieceTargeted();
-testIsPieceTargetedByOpponent();
 
 
+
+//RUN
 let game = new GameController();
-//game.CLI();
+game.CLI();
 //console.log(toAlgebraic(0, 0)); // should print "a1"
 //console.log(toAlgebraic(3, 7)); // should print "d8"
 //console.log(toAlgebraic(25, 0)); // should print "z1"
