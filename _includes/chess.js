@@ -207,6 +207,7 @@ class Cell {
 		//console.log(piece);
 	}
 
+
 	removePiece() {
 		this.Piece = "none";
 		this.Occupied = false;
@@ -219,6 +220,10 @@ class Cell {
 	setTarget() {
 		this.Target = true;
 	}
+	isOccupied() {
+		return this.Occupied;
+	}
+
 }
 
 
@@ -239,7 +244,7 @@ class Board {
 		this.Check = "none";
 		this.Kings = [];
 		this.SelectedPieceMovement = [];
-		this.autoPlace();
+		//this.autoPlace();
 	}
 
 	createArray(length, ...args) {
@@ -250,7 +255,6 @@ class Board {
 	clearBoard() {
 		this.flatCells.forEach(cell => cell.removePiece());
 	}
-
 
 	logColors() {
 		console.log(this.Cells.map(row => row.map(cell => cell.Color[0]).join("")).join("\n"));
@@ -302,8 +306,8 @@ class Board {
 	}
 
 	selectPiece(Cell) {
-		console.log("select piece called");
-		if (Cell.Piece !== "none") {
+		//console.log("select piece called");
+		if (Cell.isOccupied) {
 			this.SelectedPiece = Cell.Piece;
 			this.calcMovement();
 		} else {
@@ -334,11 +338,11 @@ class Board {
 			//console.log(`Movement Object x: ${movementObject.X}, Movement Object y: ${movementObject.Y}`);
 			switch (movementObject.Type) {
 				case "int":
-					console.log(`Case: int`);
+					//console.log(`Case: int`);
 					this.handleIntMovement(movementObject);
 					break;
 				case "dir":
-					console.log(`Case: dir`);
+					//console.log(`Case: dir`);
 					this.handleDirMovement(movementObject);
 					break;
 				default:
@@ -348,7 +352,7 @@ class Board {
 
 	}
 	handleIntMovement(movementObject) {
-		console.log("---handle int movement called---");
+		//console.log("---handle int movement called---");
 		let {
 			X: xi,
 			Y: yi
@@ -361,10 +365,10 @@ class Board {
 		let xf = xi + dx;
 		let yf = yi + dy;
 		if (this.isInBounds(xf, yf)) {
-			console.log(`xf: ${xf}, yf: ${yf}`);
-			console.log(`valid placement? ${this.isValidPlacement(movementObject,xf,yf)}`);
-			console.log(`attack movement? ${movementObject.Attack}`);
-			console.log(`unoccupied? ${!this.cellFromXY(xf, yf).Occupied}`);
+			//console.log(`xf: ${xf}, yf: ${yf}`);
+			//console.log(`valid placement? ${this.isValidPlacement(movementObject,xf,yf)}`);
+			//console.log(`attack movement? ${movementObject.Attack}`);
+			//console.log(`unoccupied? ${!this.cellFromXY(xf, yf).Occupied}`);
 			if (this.isValidPlacement(movementObject, xf, yf) && (movementObject.Attack ||
 					!this.cellFromXY(xf, yf).Occupied)) {
 				this.SelectedPieceMovement.push([xf, yf]);
@@ -405,27 +409,27 @@ class Board {
 		return x >= 0 && x < this.columns && y >= 0 && y < this.rows;
 	}
 	isValidPlacement(movementObject, x, y) {
-		console.log(`x: ${x}, y: ${y}`);
-		console.log(`is valid placement called`);
+		//console.log(`x: ${x}, y: ${y}`);
+		//console.log(`is valid placement called`);
 		let targetCell = this.cellFromXY(x, y);
 		let targetPiece = targetCell.Piece;
 		let selectedPieceName = this.SelectedPiece.Name;
-		console.log(`selected piece: ${selectedPieceName}`);
+		//console.log(`selected piece: ${selectedPieceName}`);
 		let result = false;
 		if (targetCell.Occupied && movementObject.Attack && targetPiece.Color != this.SelectedPiece.Color) {
-			console.log("space occupied, different color, and piece attacks");
+			//console.log("space occupied, different color, and piece attacks");
 			result = true;
 			return result;
 		} else if (!targetCell.Occupied && !movementObject.AttackOnly) {
-			console.log("unoccupied and not exclusive attack");
+			//console.log("unoccupied and not exclusive attack");
 			result = true;
 			return result;
 		} else if (selectedPieceName == "pawn" && targetCell.EnPassant) {
-			console.log("en passant condition met in 'isValidPlacement'");
+			//console.log("en passant condition met in 'isValidPlacement'");
 			result = true;
 			return result;
 		}
-		console.log(`is valid placement: ${result}`);
+		//console.log(`is valid placement: ${result}`);
 		return result;
 	}
 	findKings() {
@@ -435,9 +439,6 @@ class Board {
 	cellFromXY(x, y) {
 		return this.isInBounds(x, y) ? this.Cells[y][x] : null;
 	}
-
-
-
 	deselectPiece() {
 		this.SelectedPiece = "none";
 		this.resetTargets();
@@ -497,6 +498,10 @@ class GameController {
 		this.TurnComplete = false;
 		this.whiteTimer = new Timer();
 		this.blackTimer = new Timer("black");
+		this.whitePieces = [];
+		this.blackPieces = [];
+		this.whiteKing = null;
+		this.blackKing = null;
 		this.pieceSelected = false;
 	}
 
@@ -504,19 +509,31 @@ class GameController {
 		if (cell.Piece.Color === this.Turn) {
 			this.Board.selectPiece(cell);
 			return true;
+		} else if (!cell.isOccupied) {
+			console.log("space unoccupied");
 		} else {
 			console.log("Incorrect color");
 			return false;
 		}
 	}
-
 	selectPieceXY(x, y) {
-		console.log(`selectPieceXY called with X: ${x}, Y: ${y}`);
+		//console.log(`selectPieceXY called with X: ${x}, Y: ${y}`);
 		const cell = this.Board.cellFromXY(x, y);
-		console.log(`Cell has piece ${cell.Piece.Name}`);
+		//console.log(`Cell has piece ${cell.Piece.Name}`);
 		if (cell) this.selectPiece(cell);
 	}
-
+	findAllPieces() {
+		this.Board.flatCells.forEach((cell) => this.addPiece(cell.Piece));
+		//console.log(this.whitePieces);
+		//console.log(this.blackPieces);
+	}
+	addPiece(piece) {
+		if (piece.Color === "black") {
+			this.blackPieces.push(piece);
+		} else if (piece.Color === "white") {
+			this.whitePieces.push(piece);
+		}
+	}
 	placePiece(cell) {
 		if (cell.Target) {
 			this.clearEnPassant();
@@ -537,20 +554,67 @@ class GameController {
 			this.Board.deselectPiece();
 		}
 	}
+	findKings(){
+		let whiteKing = this.whitePieces.filter(piece => piece.Name === "king")[0];
+		let blackKing = this.blackPieces.filter(piece => piece.Name === "king")[0];
+		this.whiteKing = whiteKing;
+		this.blackKing = blackKing;
+		//console.log(this.whiteKing);
+		//console.log(this.blackKing);
+	}
 	setEnPassantIfNeeded(previousCell, cell) {
-		console.log("setEnPassantIfNeeded called");
+		//console.log("setEnPassantIfNeeded called");
 		let selectedPiece = this.Board.SelectedPiece;
 		let cellDiff = cell.Y - previousCell.Y;
 		if (selectedPiece.Name == "pawn" && Math.abs(cellDiff) == 2) {
 			let dir = cellDiff / 2;
 			let midCellY = dir + previousCell.Y;
 			let midCell = this.Board.cellFromXY(cell.X, midCellY);
-			console.log(`en Passant Condition Set for cell at ${midCell.X}, ${midCell.Y}`);
+			//console.log(`en Passant Condition Set for cell at ${midCell.X}, ${midCell.Y}`);
 			midCell.EnPassant = true;
 		}
 	}
+	//isPieceTargeted(piece) {
+	//	const targetsPiece = (cell) => this.cellTargetsPiece(cell, piece);
+	//	let someCellTargetsPiece = this.Board.flatCells.some(targetsPiece);
+	//}
+	//cellTargetsPiece(cell, piece){
+	//}
+	isPieceTargeted(piece) {
+		return this.Board.flatCells.some(cell => this.cellTargetsPiece(cell, piece));
+	}
+
+	cellTargetsPiece(cell, piece) {
+		if (!cell.isOccupied() || cell.Piece.Color === piece.Color) {
+			return false;
+		}
+
+		const enemyPiece = cell.Piece;
+		enemyPiece.setMovement();
+
+		return enemyPiece.Movement.some(movement => {
+			let targetX = cell.X + movement.X;
+			let targetY = cell.Y + movement.Y;
+
+			return this.Board.isInBounds(targetX, targetY) &&
+				this.Board.Cells[targetY][targetX].Piece === piece;
+		});
+	}
+	checkForCheck() {
+		this.Board.findKings(); // Make sure the Kings list is up to date
+
+		for (let king of this.Board.Kings) {
+			if (this.isPieceTargeted(king)) {
+				console.log(`${king.Color} king is in check.`);
+				return king.Color; // Return the color of the king in check
+			}
+		}
+		console.log(`Neither king is in check.`);
+		return null; // Return `null` if no king is in check
+	}
+
 	clearEnPassant() {
-		this.Board.flatCells.forEach((cell) => cell.EnPassant = false);
+		this.Board.flatCells.some(cell => cell.EnPassant = false);
 	}
 
 	endTurn() {
@@ -571,6 +635,8 @@ class GameController {
 	}
 
 	startGame() {
+		this.Board.autoPlace();
+		this.findAllPieces();
 		this.Play = true;
 		this.whiteTimer.startTimer();
 	}
@@ -580,12 +646,23 @@ class GameController {
 		this.startGame();
 		while (this.Play) {
 			console.log(`turn: ${this.Turn}`);
-			this.Board.logBoard();
-			this.getPieceSelection();
-			this.getPlacementSelection();
+			this.takeTurn();
 		}
 		this.Play = false;
 	}
+	takeTurn() {
+		this.Board.logBoard();
+		this.findKings();
+		//this.logTimers();
+		this.getPieceSelection();
+		this.getPlacementSelection();
+	}
+	logTimers() {
+		console.log(`black timer: ${this.blackTimer.CurrentQuantity}`)
+
+		console.log(`white timer: ${this.whiteTimer.CurrentQuantity}`);
+	}
+
 	getPieceSelection() {
 		this.pieceSelected = false;
 		while (!this.pieceSelected) {
@@ -595,9 +672,9 @@ class GameController {
 				return;
 			}
 			try {
-				console.log("trying to parse user input");
+				//console.log("trying to parse user input");
 				let [pieceX, pieceY] = userPieceSelection.split(",").map(Number);
-				console.log(`piece X: ${pieceX}, piece Y: ${pieceY}`);
+				//console.log(`piece X: ${pieceX}, piece Y: ${pieceY}`);
 				this.selectPieceXY(pieceX, pieceY);
 				if (this.Board.SelectedPiece !== "none") {
 					this.pieceSelected = true;
@@ -614,6 +691,7 @@ class GameController {
 			let userPlacementSelection = prompt(`Please select where to place the piece (0-${this.Board.rows - 1}, 0-${this.Board.columns - 1}) or type 'q' to cancel:`);
 			if (userPlacementSelection.toLowerCase() === "q") {
 				console.log("Placement canceled.");
+				this.Play = false;
 				this.Board.deselectPiece();
 				break;
 			}
@@ -638,6 +716,7 @@ class GameController {
 		}
 	}
 }
+
 //CONVERSIONS
 function toAlgebraic(x, y) {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -673,6 +752,47 @@ function assertEqual(actual, expected, message) {
 		console.error(`   Actual: ${actual}`);
 	}
 }
+
+function testIsPieceTargeted() {
+	const game = new GameController();
+	game.Board.clearBoard();
+
+	// Manually place pieces
+	let whiteRook = new Piece("rook", "white");
+	let blackKnight = new Piece("knight", "black");
+	let whitePawn = new Piece("pawn", "white");
+
+	game.Board.placePiece(whiteRook, 0, 0);
+	game.Board.placePiece(blackKnight, 2, 1);
+	game.Board.placePiece(whitePawn, 4, 4);
+
+	// Testing different scenarios
+	let tests = [{
+			piece: whiteRook,
+			expected: true,
+			description: "White rook should be targeted by black knight."
+		},
+		{
+			piece: blackKnight,
+			expected: false,
+			description: "Black knight should not be targeted by any white piece."
+		},
+		// Additional test case(s) can be added here
+	];
+
+	for (let {
+			piece,
+			expected,
+			description
+		}
+		of tests) {
+		const result = game.isPieceTargeted(piece);
+		assertEqual(result, expected, description);
+	}
+}
+
+testIsPieceTargeted();
+
 
 
 
