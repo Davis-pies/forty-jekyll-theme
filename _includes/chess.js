@@ -653,6 +653,7 @@ class GameController {
 	takeTurn() {
 		this.Board.logBoard();
 		this.findKings();
+		this.checkForCheck();
 		//this.logTimers();
 		this.getPieceSelection();
 		this.getPlacementSelection();
